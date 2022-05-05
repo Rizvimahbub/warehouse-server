@@ -38,16 +38,18 @@ async function run(){
 
         app.put('/bike/:id', async(req, res) => {
             const id = req.params.id;
+            const bike = req.body;
             const filter = {_id:ObjectId(id)};
             const options = {upsert : true};
             const newDoc = {
-                $inc : {
-                    quantity : - 1,
+                $set : {
+                    quantity : bike.quantity,
                 }
             }
             const result = await serverDisplayCollection.updateOne(filter,newDoc,options);
             res.send(result)
         })
+
     }
     finally{
 
