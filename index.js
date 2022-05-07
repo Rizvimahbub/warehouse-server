@@ -21,6 +21,7 @@ async function run(){
         await client.connect();
         const serverDisplayCollection = client.db('Warehouse').collection('Display');
         const serverInventoryCollection = client.db('Warehouse').collection('Inventory');
+        const serverOrdersCollection = client.db('Warehouse').collection('Orders');
 
 
         app.get('/bike', async(req, res) => {
@@ -57,6 +58,57 @@ async function run(){
             const bike = req.body;
             const finalResult = await serverInventoryCollection.insertOne(bike);
             res.send(finalResult);
+        })
+
+
+        app.get('/inventory', async(req, res) => {
+            const query = {};
+            const items = serverInventoryCollection.find(query);
+            const finalResult = await items.toArray();
+            res.send(finalResult);
+        })
+
+
+        app.delete('/inventory/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id : ObjectId(id)};
+            const deleteItem = await serverInventoryCollection.deleteOne(query);
+            res.send(deleteItem)
+        })
+
+        app.put('/orders/:id', async(req, res) => {
+            const id = req.params.id;
+            const bike = req.body;
+            const filter = {_id:ObjectId(id)};
+            const options = {upsert : true};
+            const newDoc = {
+                $set : {
+                    name : bike.name,
+                    url : bike.url,
+                    description : bike.description,
+                    supplier : bike.supplier,
+                    quantity : bike.quantity,
+                }
+            }
+            const finalResult = await serverOrdersCollection.updateOne(filter,newDoc,options);
+            res.send(finalResult)
+
+        })
+
+
+        app.get('/orders', async(req, res) => {
+            const items = {};
+            const cursor = serverOrdersCollection.find(items);
+            const finalResult = await cursor.toArray()
+            res.send(finalResult);
+        })
+
+
+        app.delete('/orders/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id : ObjectId(id)};
+            const deleteItem = await serverOrdersCollection.deleteOne(query);
+            res.send(deleteItem)
         })
 
     }
