@@ -20,6 +20,7 @@ async function run(){
     try{
         await client.connect();
         const serverDisplayCollection = client.db('Warehouse').collection('Display');
+        const serverInventoryCollection = client.db('Warehouse').collection('Inventory');
 
 
         app.get('/bike', async(req, res) => {
@@ -48,6 +49,14 @@ async function run(){
             }
             const result = await serverDisplayCollection.updateOne(filter,newDoc,options);
             res.send(result)
+
+        })
+
+
+        app.post('/inventory', async(req, res) => {
+            const bike = req.body;
+            const finalResult = await serverInventoryCollection.insertOne(bike);
+            res.send(finalResult);
         })
 
     }
