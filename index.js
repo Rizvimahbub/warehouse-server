@@ -78,6 +78,7 @@ async function run(){
 
         app.put('/orders/:id', async(req, res) => {
             const id = req.params.id;
+            const email = req.query.email;
             const bike = req.body;
             const filter = {_id:ObjectId(id)};
             const options = {upsert : true};
@@ -88,6 +89,7 @@ async function run(){
                     description : bike.description,
                     supplier : bike.supplier,
                     quantity : bike.quantity,
+                    email : bike.email
                 }
             }
             const finalResult = await serverOrdersCollection.updateOne(filter,newDoc,options);
@@ -97,7 +99,9 @@ async function run(){
 
 
         app.get('/orders', async(req, res) => {
-            const items = {};
+            const email = req.query.email;
+            console.log(email)
+            const items = {email : email};
             const cursor = serverOrdersCollection.find(items);
             const finalResult = await cursor.toArray()
             res.send(finalResult);
