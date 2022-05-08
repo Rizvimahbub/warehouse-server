@@ -52,7 +52,7 @@ async function run() {
 
 
         //Display Section
-        app.get('/bike', async (req, res) => {
+        app.get('/bike', verifyToken, async (req, res) => {
             const query = {};
             const cursor = serverDisplayCollection.find(query);
             const bikes = await cursor.toArray();
@@ -92,7 +92,7 @@ async function run() {
         })
 
 
-        app.get('/inventory', async (req, res) => {
+        app.get('/inventory', verifyToken, async (req, res) => {
             const query = {};
             const items = serverInventoryCollection.find(query);
             const finalResult = await items.toArray();
