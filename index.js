@@ -52,7 +52,7 @@ async function run() {
 
 
         //Display Section
-        app.get('/bike',  async (req, res) => {
+        app.get('/bike', verifyToken, async (req, res) => {
             const query = {};
             const cursor = serverDisplayCollection.find(query);
             const bikes = await cursor.toArray();
